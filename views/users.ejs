@@ -1,0 +1,94 @@
+<%- include('partials/header') %>
+
+<div id="wrapper">
+  <%- include('partials/sidebar') %>
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+      <%- include('partials/topbar') %>
+      <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Users</h1>
+        <p class="mb-4">This is data of Users</p>
+        <%- include('partials/alert') %>
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <div class="btn-group">
+              <a href="/users/add" class="btn btn-primary active" aria-current="page">
+                <i class="fa-sharp fa-solid fa-plus"></i></a>
+              <a href="/users/add" class="btn btn-primary">Add</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <% rows.forEach((item, index)=> { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= item.email %></td>
+                    <td><%= item.name %></td>
+                    <td><%= item.role %></td>
+                    <td>
+                      <div class="d-grid gap-2 d-md-block">
+                        <a type="button" class="btn btn-success rounded-circle" href="/users/edit/<%= item.userid %>">
+                          <i class="fas fa-solid fa-pen"></i></a>
+                        <a type="button" class="btn btn-danger rounded-circle"
+                          onclick="$('#modal-delete<%= item.userid %>').modal('show')"
+                          title="Delete"><i class="fas fa-solid fa-trash"></i></a>
+                      </div>
+                      <div class="modal fade" id="modal-delete<%= item.userid %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Deleted confirmation</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onclick="$('#modal-delete').modal('hide')">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <p>Are you sure, you want to delete it?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                onclick="$('#modal-delete').modal('hide')">No</button>
+                              <a id="btn-delete" type="button" class="btn btn-primary"
+                                href="users/delete/<%= item.userid %>">Yes</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('partials/copyright') %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
