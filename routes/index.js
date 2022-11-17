@@ -38,7 +38,8 @@ router.post('/login', async function(req, res, next) {
 router.get('/register', function(req, res, next) {
     res.render('register',{
         success: req.flash('success'),
-        error: req.flash('error')
+        error: req.flash('error'),
+        currentPage: 'POS - Register'
     });
 });
 

@@ -9,11 +9,11 @@ module.exports = (db) => {
   router.get('/', isLoggedIn, async function (req, res, next) {
     try {
       const { rows } = await db.query('SELECT * FROM users');
-      res.render('users', {
+      res.render('users/list', {
         user: req.session.user,
         success: req.flash('success'),
         error: req.flash('error'),
-        currentPage: 'POS - users',
+        currentPage: 'POS - Users',
         rows,
       });
     } catch (err) {
@@ -22,7 +22,7 @@ module.exports = (db) => {
   });
 
   router.get('/add', isLoggedIn, async  (req, res, next) => {
-    res.render('add', {
+    res.render('users/add', {
       currentPage: 'POS - users',
       user: req.session.user,
     })
@@ -51,7 +51,7 @@ module.exports = (db) => {
     try {
       const { userid } = req.params
       const { rows } = await db.query('SELECT * FROM users WHERE userid = $1', [userid])
-      res.render('edit', {
+      res.render('users/edit', {
         currentPage: 'POS - users',
         user: req.session.user,
         item: rows[0]
@@ -65,10 +65,10 @@ module.exports = (db) => {
     try {
       const { userid } = req.params
       const { email, name, role } = req.body
-      const { rows: users } = await db.query('SELECT * FROM users WHERE email = $1', [email])
-      if (users.length > 0) {
-        throw 'User already exist'
-      }
+      // const { rows: users } = await db.query('SELECT * FROM users WHERE email = $1', [email])
+      // if (users.length > 0) {
+      //   throw 'User already exist'
+      // }
 
       await db.query('UPDATE users SET email = $1, name = $2, role = $3 WHERE userid = $4',[email, name, role, userid])
      
