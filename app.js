@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session')
 var flash = require('connect-flash');
+const fileupload = require('express-fileupload')
 
 const { Pool } = require('pg')
 const pool = new Pool({
@@ -18,6 +19,7 @@ const pool = new Pool({
 var indexRouter = require('./routes/index')(pool);
 var usersRouter = require('./routes/users')(pool);
 var unitsRouter = require('./routes/units')(pool);
+var goodsRouter = require('./routes/goods')(pool);
 
 var app = express();
 
@@ -30,17 +32,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(flash())
+app.use(fileupload())
 app.use(session({
   secret: 'rubicamp',
   resave: false,
   saveUninitialized: true
 }))
-app.use(flash())
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/units', unitsRouter);
+app.use('/goods', goodsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
