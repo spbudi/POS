@@ -21,6 +21,7 @@ $(document).ready(function () {
           } 
          },
           { "data": "picture",
+          orderable: false,
           render:function(data) {
             return ` 
             <img src= "/images/upload/${data}" alt= "Preview" width= "100">
@@ -28,6 +29,7 @@ $(document).ready(function () {
           }
         },
           { "data": "barcode",
+          orderable: false,
           render:function(data) {
             return `
             <div class="d-grid gap-2 d-md-block">

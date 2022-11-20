@@ -58,8 +58,8 @@
     </div>
   </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="#charts.html">
+    <li class="nav-item <%= currentPage == 'POS - Suppliers' ? 'active' : '' %>">
+      <a class="nav-link" href="/suppliers">
         <i class="fa-solid fa-link"></i>
           <span>Suppliers</span></a>
   </li>
@@ -70,9 +70,9 @@
         <span>Customers</span></a>
   </li>
 
-  <li class="nav-item <%= currentPage == 'POS - users' ? 'active' : ''%>">
+  <li class="nav-item <%= currentPage == 'POS - Users' ? 'active' : ''%>">
     <a class="nav-link" href="/users">
-        <i class="fa-solid fa-user"></i>
+        <i class="fas fa-fw fa-user"></i>
         <span>Users</span></a>
 </li>
 
