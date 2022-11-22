@@ -32,7 +32,7 @@
   <div class="sidebar-heading">MASTER</div>
 
   <!-- Nav Item - Utilities Collapse Menu -->
-  <li class="nav-item">
+  <li class="nav-item <%= currentPage == 'POS - Good Utilities' ? 'active' : '' %>">
     <a
       class="nav-link collapsed"
       href="#"
@@ -83,8 +83,8 @@
   <div class="sidebar-heading">TRANSACTIONS</div>
 
   <!-- Nav Item - Charts -->
-  <li class="nav-item">
-    <a class="nav-link" href="#tables.html">
+  <li class="nav-item <%= currentPage == 'POS - Purchases' ? 'active' : '' %>">
+    <a class="nav-link" href="/purchases">
         <i class="fas fa-fw fa-table"></i>
         <span>Purchases</span></a>
 </li>

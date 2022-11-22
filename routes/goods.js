@@ -14,7 +14,7 @@ module.exports = (db) => {
         user: req.session.user,
         success: req.flash('success'),
         error: req.flash('error'),
-        currentPage: 'POS - Goods',
+        currentPage: 'POS - Good Utilities',
         rows,
       });
     } catch (err) {
