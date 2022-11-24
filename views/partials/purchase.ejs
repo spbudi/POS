@@ -15,9 +15,9 @@
             })
         })
         $('#quantity').keyup(function () {
-            const quantity = $(this).val()
+            const quantity = $('#quantity').val()
             const purchaseprice = $('#purchaseprice').val()
-            $('#totalprice').val(currencyFormatter.format(purchaseprice * quantity))
+            $('#totalprice').val(purchaseprice * quantity)
         })
         $('#detail-form').submit(function (e) {
             e.preventDefault();
@@ -25,7 +25,7 @@
             const quantity = $('#quantity').val()
             $.post('/purchases/additem', { invoice, itemcode, quantity }).done(function (data) {
                 readDetails()
-                $('#totalsum').val((data.totalsum))
+                $('#totalsum').val(data.totalsum)
             })
         })
     })
@@ -80,7 +80,7 @@
             </tr>
             `
             })
-            $('#detail-table tbody').html(html)
+            $('#items-table').html(html)
         })
     }
   </script>

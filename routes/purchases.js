@@ -49,7 +49,8 @@ module.exports = (db) => {
 
 router.get('/create', isLoggedIn, async  (req, res, next) => {
   try {
-    const { rows } = await db.query('INSERT INTO purchases(totalsum) VALUES(0) returning *')
+    const {userid} = req.session.user
+    const { rows } = await db.query('INSERT INTO purchases(totalsum, operator) VALUES(0, $1) returning *', [userid])
     res.redirect(`/purchases/show/${rows[0].invoice}`)
     console.log(rows);
   }catch(e){
@@ -70,6 +71,8 @@ router.get('/show/:invoice', isLoggedIn, async  (req, res, next) => {
     res.render('purchases/form', {
       currentPage: 'Purchases',
       user: req.session.user,
+      success: req.flash('success'),
+      error: req.flash('error'),
       purchases: purchases.rows[0],
       goods,
       users,
@@ -78,6 +81,22 @@ router.get('/show/:invoice', isLoggedIn, async  (req, res, next) => {
     })
   }catch(e){
     res.send(e)
+  }
+})
+
+router.post('/show/:invoice', isLoggedIn, async (req, res) => {
+  try {
+    const { invoice } = req.params
+    const { totalsum, supplier } = req.body
+    const {userid} = req.session.user
+    await db.query('UPDATE purchases SET totalsum = $1, supplier = $2, operator = $3 WHERE invoice = $4', [totalsum, supplier,userid, invoice])
+
+    req.flash('success', 'Transaction Success!')
+    res.redirect('/purchases')
+  } catch (error) {
+    console.log(error)
+    req.flash('error', 'Transaction Fail!')
+    return res.redirect('/purchases')
   }
 })
 
@@ -90,6 +109,58 @@ router.get('/goods/:barcode', isLoggedIn, async (req, res)=> {
     res.send(e)
   }
 })
+
+router.post('/additem', isLoggedIn, async (req, res) => {
+  try {
+    const { invoice, itemcode, quantity } = req.body
+    await db.query('INSERT INTO purchaseitems (invoice, itemcode, quantity)VALUES ($1, $2, $3) returning *', [invoice, itemcode, quantity]);
+    const { rows } = await db.query('SELECT * FROM purchases WHERE invoice = $1', [invoice])
+  
+    res.json(rows[0])
+  } catch (err) {
+    console.log(err)
+    res.send(err)
+  }
+})
+
+router.get('/details/:invoice', isLoggedIn, async (req, res, next) => {
+  try {
+    const { invoice } = req.params
+    const { rows: data } = await db.query('SELECT purchaseitems.*, goods.name FROM purchaseitems LEFT JOIN goods ON purchaseitems.itemcode = goods.barcode WHERE purchaseitems.invoice = $1 ORDER BY purchaseitems.id', [invoice])
+
+    res.json(data)
+    console.log(data);
+  } catch (err) {
+    console.log(err)
+  }
+});
+
+router.get('/deleteitems/:id', isLoggedIn, async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { rows: data } = await db.query('DELETE FROM purchaseitems WHERE id = $1 returning *', [id])
+    
+    req.flash('success', 'Transaction deleted successfully') 
+    res.redirect(`/purchases/show/${data[0].invoice}`)
+  } catch (err) {
+    req.flash('error', 'Please, Edit and Delete items first ')
+
+    console.log(err)
+  }
+});
+
+router.get('/delete/:invoice', isLoggedIn, async (req, res, next) => {
+  try {
+    const { invoice } = req.params
+    await db.query('DELETE FROM purchases WHERE invoice = $1', [invoice])
+  
+    req.flash('success', 'Transaction deleted successfully')
+    res.redirect('/purchases');
+  } catch (err) {
+    req.flash('error', 'Please, Edit and Delete items first ')
+    return res.redirect('/purchases')
+  }
+});
 
   return router
 }
