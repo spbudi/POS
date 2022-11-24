@@ -1,3 +1,5 @@
+// const moment = require('moment')
+
 $(document).ready(function () {
   $('#purchases-table').DataTable({
       "lengthMenu": [[3, 5, 10], [3, 5, 10, "All"]],
@@ -9,7 +11,7 @@ $(document).ready(function () {
           { 
             "data": "time",
             render: function(data){
-              return ` ${moment(data).format('DD MMM YYYY HH:mm:s')}`
+              return `${moment(data).format('DD MMM YYYY HH:mm:s')}`
             } 
           },
           {
@@ -18,14 +20,14 @@ $(document).ready(function () {
               return currencyFormatter.format(data)
              } 
             },
-          { "data": "supplier" },
+          { "data": "name" },
           { 
             "data": "invoice",
             orderable: false,
           render:function(data) {
             return `
             <div class="d-grid gap-2 d-md-block">
-              <a type="button" class="btn btn-success rounded-circle" href="/purchases/edit/${data}">
+              <a type="button" class="btn btn-success rounded-circle" href="/purchases/show/${data}">
                 <i class="fa-solid fa-circle-info"></i></a>
               <a type="button" class="btn btn-danger rounded-circle"
                 onclick="$('#modal-delete${data}').modal('show')"
