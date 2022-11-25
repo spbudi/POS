@@ -109,3 +109,56 @@ $set_totalprice$ LANGUAGE plpgsql;
 CREATE TRIGGER set_totalprice
 BEFORE INSERT OR UPDATE ON purchaseitems
     FOR EACH ROW EXECUTE FUNCTION price_update();
+
+
+-- stock update sales --
+CREATE OR REPLACE FUNCTION update_sales() RETURNS TRIGGER AS $set_sales$
+    DECLARE
+    old_stock INTEGER;
+    price_sum NUMERIC;
+    current_invoice TEXT;
+    BEGIN
+        IF (TG_OP = 'INSERT') THEN
+            SELECT stock INTO old_stock FROM goods WHERE barcode = NEW.itemcode;
+            UPDATE goods SET stock = old_stock + NEW.quantity WHERE barcode = NEW.itemcode;
+			current_invoice := NEW.invoice;
+
+        ELSIF (TG_OP = 'UPDATE') THEN
+            SELECT stock INTO old_stock FROM goods WHERE barcode = NEW.itemcode;
+            UPDATE goods SET stock = old_stock - OLD.quantity + NEW.quantity WHERE barcode = NEW.itemcode;
+			current_invoice := NEW.invoice;
+
+        ELSIF (TG_OP = 'DELETE') THEN
+            SELECT stock INTO old_stock FROM goods WHERE barcode = OLD.itemcode;
+            UPDATE goods SET stock = old_stock - OLD.quantity WHERE barcode = OLD.itemcode;
+			current_invoice := OLD.invoice;
+			
+        END IF;
+		
+        SELECT coalesce(sum(totalprice), 0) INTO price_sum FROM saleitems WHERE invoice = current_invoice;
+        UPDATE sales SET totalsum = price_sum WHERE invoice = current_invoice;
+			
+        RETURN NULL;
+    END;
+$set_sales$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_sales
+AFTER INSERT OR UPDATE OR DELETE ON saleitems
+    FOR EACH ROW EXECUTE FUNCTION update_sales();
+
+-- PRICE UPDATE
+CREATE OR REPLACE FUNCTION sales_priceupdate() RETURNS TRIGGER AS $set_salespriceupdate$
+    DECLARE
+    itemsellingprices NUMERIC;
+    BEGIN
+        SELECT sellingprice INTO itemsellingprices FROM goods WHERE barcode = NEW.itemcode;
+        NEW.sellingprice := itemsellingprices;
+        NEW.totalprice := NEW.quantity * itemsellingprices;
+            
+        RETURN NEW;
+    END;
+$set_salespriceupdate$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_salespriceupdate
+BEFORE INSERT OR UPDATE ON saleitems
+    FOR EACH ROW EXECUTE FUNCTION sales_priceupdate();

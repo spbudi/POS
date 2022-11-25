@@ -20,13 +20,13 @@
                 <div class="col-4">
                     <div class="mb-3">
                       <label for="invoice" class="form-label">Invoice</label>
-                      <input type="text" class="form-control" id="invoice" name="invoice" aria-describedby="emailHelp" value="<%= purchases.invoice%>"readonly>
+                      <input type="text" class="form-control" id="invoice" name="invoice" aria-describedby="emailHelp" value="<%= sales.invoice%>"readonly>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="mb-3">
                       <label for="time" class="form-label">Time</label>
-                      <input type="text" class="form-control" id="time" name="time" aria-describedby="emailHelp" value="<%= moment(purchases.time).format('DD-MMMM-YYYY HH:mm:ss')%>" readonly>
+                      <input type="text" class="form-control" id="time" name="time" aria-describedby="emailHelp" value="<%= moment(sales.time).format('DD-MMM-YYYY HH:mm:s')%>" readonly>
                     </div>
                 </div>
                 <div class="col-4">
@@ -38,7 +38,7 @@
                 <div class="col-4">
                   <hr>
                     <div class="mb-3">
-                      <label for="operator" class="form-label">Goods Barcode</label>
+                      <label for="barcode" class="form-label">Goods Barcode</label>
                       <select class="form-control " name="barcode" id="barcode">
                         <option value="">Choose barcode product</option>
                         <% goods.forEach(item=> { %>
@@ -53,20 +53,20 @@
                   <hr>
                     <div class="mb-3">
                       <label for="name" class="form-label">Goods Name</label>
-                      <input type="email" class="form-control" id="name" name="name" aria-describedby="emailHelp" readonly>
+                      <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp" readonly>
                     </div>
                 </div>
                 <div class="col-4">
                   <hr>
                     <div class="mb-3">
                       <label for="stock" class="form-label">Stock</label>
-                      <input type="email" class="form-control" id="stock" name="stock" aria-describedby="emailHelp" readonly>
+                      <input type="text" class="form-control" id="stock" name="stock" aria-describedby="emailHelp" readonly>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="mb-3">
-                      <label for="purchaseprice" class="form-label">Purchase Price</label>
-                      <input type="text" class="form-control" id="purchaseprice" name="purchaseprice" aria-describedby="emailHelp">
+                      <label for="sellingprice" class="form-label">Selling Price</label>
+                      <input type="text" class="form-control" id="sellingprice" name="sellingprice" aria-describedby="emailHelp">
                     </div>
                 </div>
                 <div class="col-4">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
               </div>
-              <button href="#" type="submit" class="btn btn-primary btn-icon-split">
+              <button type="submit" class="btn btn-primary btn-icon-split">
                 <span class="icon text-white-50"><i class="fa-sharp fa-solid fa-plus"></i></span>
                 <span class="text">Add</span>
             </button>
@@ -97,7 +97,7 @@
       <form action="" method="post">
       <div class="card">
         <div class="card-body">
-            <table class="table table-striped" id="detail-table" width="100%" cellspacing="0">
+            <table class="table table-striped" width="100%" cellspacing="0" id="sales-tables">
               <thead>
                 <tr>
                   <th>No.</th>
@@ -109,8 +109,7 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="items-table">
-                
+              <tbody id="table-sales">
               </tbody>
             </table>
           </div>
@@ -118,19 +117,33 @@
             <div class="row mb-3 px-2">
               <label for="totalsum" class="col-sm-2 col-form-label text-dark">Total Summary</label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" id="totalsum" name="totalsum" value="<%= purchases.totalsum %>"
+                  <input type="text" class="form-control" id="totalsum" name="totalsum" value="<%= sales.totalsum %>"
+                      readonly>
+              </div>
+          </div>
+            <div class="row mb-3 px-2">
+              <label for="pay" class="col-sm-2 col-form-label text-dark">Pay</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="pay" name="pay" value="<%= sales.pay %>"
+                      >
+              </div>
+          </div>
+            <div class="row mb-3 px-2">
+              <label for="change" class="col-sm-2 col-form-label text-dark">Change</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="change" name="change" value="<%= sales.change %>"
                       readonly>
               </div>
           </div>
 
           <div class="row mb-3 px-2">
-            <label for="supplier" class="col-sm-2 col-form-label text-dark">Supplier</label>
+            <label for="customer" class="col-sm-2 col-form-label text-dark">Customer</label>
             <div class="col-sm-10">
-              <select type="password" class="form-control" id="supplier" name="supplier" >
-                  <option value="" selected>Choose the supplier ...</option>
-                  <% supplier.forEach(item=> { %>
-                      <option value="<%= item.supplierid %>">
-                          <%= item.supplierid + ' - ' + item.name %>
+              <select type="password" class="form-control" id="customer" name="customer" >
+                  <option value="" selected>Choose the customer ...</option>
+                  <% customer.forEach(item=> { %>
+                      <option value="<%= item.customerid %>">
+                          <%= item.customerid + ' - ' + item.name %>
                               <% }) %>
                       </option>
               </select>
@@ -140,7 +153,7 @@
           <span class="icon text-white-50"><i class="fas fa-solid fa-plus"></i></span>
           <span class="text">Finish</span>
       </button>
-      <a href="/purchases" type="submit" class="btn btn-warning btn-icon-split">
+      <a href="/sales" type="submit" class="btn btn-warning btn-icon-split">
           <span class="icon text-white-50"><i class="fa-sharp fa-solid fa-arrow-left"></i></span>
           <span class="text">Back</span>
       </a>
@@ -152,4 +165,4 @@
 </div>
 
 <%- include('../partials/footer') %>
-<%- include('../partials/purchase') %>
+<%- include('../partials/sales') %>

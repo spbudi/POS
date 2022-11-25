@@ -1,9 +1,9 @@
-$(document).ready(function () {
-  $('#purchases-table').DataTable({
-      "lengthMenu": [[3, 5, 10], [3, 5, 10, "All"]],
+$(document).ready(() => {
+  $('#sales-table').DataTable({
+      "lengthMenu": [[3, 5, 10], [3, 5, 10,]],
       "processing": true,
       "serverSide": true,
-      "ajax": "/purchases/datatable",
+      "ajax": "/sales/datatable",
       "columns": [
           { "data": "invoice" },
           { 
@@ -18,14 +18,26 @@ $(document).ready(function () {
               return currencyFormatter.format(data)
              } 
             },
-          { "data": "name" },
+          { 
+            "data": "pay",
+            render: function (data) {
+              return currencyFormatter.format(data)
+            }
+         },
+          { 
+            "data": "change",
+            render: function (data) {
+              return currencyFormatter.format(data)
+            }
+         },
+         {"data": "name"},
           { 
             "data": "invoice",
             orderable: false,
           render:function(data) {
             return `
             <div class="d-grid gap-2 d-md-block">
-              <a type="button" class="btn btn-success rounded-circle" href="/purchases/show/${data}">
+              <a type="button" class="btn btn-success rounded-circle" href="/sales/show/${data}">
                 <i class="fa-solid fa-circle-info"></i></a>
               <a type="button" class="btn btn-danger rounded-circle"
                 onclick="$('#modal-delete${data}').modal('show')"
@@ -48,7 +60,7 @@ $(document).ready(function () {
                   <button type="button" class="btn btn-secondary" data-dismiss="modal"
                     onclick="$('#modal-delete').modal('hide')">No</button>
                   <a id="btn-delete" type="button" class="btn btn-primary"
-                    href="purchases/delete/${data}">Yes</a>
+                    href="sales/delete/${data}">Yes</a>
                 </div>
               </div>
             </div>
