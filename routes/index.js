@@ -64,13 +64,6 @@ router.post('/register', async function(req, res, next) {
     }
 });
 
-router.get('/dashboard', isLoggedIn ,function(req, res, next) {
-    res.render('dashboard', {
-        user: req.session.user,
-        currentPage: 'POS - Dashboard'
-    });
-});
-
 router.get('/logout', function(req, res, next) {
     req.session.destroy(function(err) {
         res.redirect('/')
