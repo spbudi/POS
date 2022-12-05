@@ -103,6 +103,46 @@ module.exports = (db) => {
     }
   })
 
+  router.get('/profile', isLoggedIn, async  (req, res, next) => {
+    try {
+
+      // const user = req.session.user
+      // const userid = user.userid
+      // const { rows: users } = await db.query('SELECT * FROM users WHERE userid = $1', [userid])
+      res.render('users/profile', {
+        success: req.flash('success'),
+        error: req.flash('error'),
+        currentPage: 'POS - Dashboard',
+        user: req.session.user,
+        // data: users[0],
+      })
+    } catch (e) {
+      res.send(e);
+    }
+  });
+
+  router.post('/profile', isLoggedIn, async (req, res) => {
+    try {
+      const user = req.session.user
+      // const {userid} = user
+      const userid = user.userid
+      const { email, name } = req.body
+
+      await db.query('UPDATE users SET email = $1, name = $2 WHERE userid = $3 returning *',[email, name, userid])
+
+      const { rows: emails } = await db.query(`SELECT * FROM users WHERE email = $1`,[email])
+      const data = emails[0]
+      req.session.user = data
+      req.session.save()
+      req.flash('success', 'Your profile has been updated')
+      res.redirect('/users/profile')
+    } catch (err) {
+      console.log(err);
+      req.flash('error', 'Can not updated profile')
+      return res.redirect('/users/profile')
+    }
+  })
+
   router.get('/delete/:userid', isLoggedIn, async  (req, res, next) => {
     try {
       const { userid } = req.params
@@ -114,6 +154,7 @@ module.exports = (db) => {
       return res.redirect('/users')
     }
   });
+
 
   return router;
 };
