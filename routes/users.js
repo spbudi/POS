@@ -2,11 +2,11 @@ var express = require('express');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var router = express.Router();
-const { isLoggedIn } = require('../helpers/util')
+const { isAdmin } = require('../helpers/util')
 
 
 module.exports = (db) => {
-  router.get('/', isLoggedIn, async function (req, res, next) {
+  router.get('/', isAdmin, async function (req, res, next) {
     try {
       const { rows } = await db.query('SELECT * FROM users');
       res.render('users/list', {
@@ -44,14 +44,14 @@ module.exports = (db) => {
     res.json(response)
 })
 
-  router.get('/add', isLoggedIn, async  (req, res, next) => {
+  router.get('/add', isAdmin, async  (req, res, next) => {
     res.render('users/add', {
       currentPage: 'POS - users',
       user: req.session.user,
     })
   });
 
-  router.post('/add', isLoggedIn, async (req, res) => {
+  router.post('/add', isAdmin, async (req, res) => {
     try {
       const { email, name, password, role } = req.body
       
@@ -70,7 +70,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/edit/:userid', isLoggedIn, async  (req, res, next) => {
+  router.get('/edit/:userid', isAdmin, async  (req, res, next) => {
     try {
       const { userid } = req.params
       const { rows } = await db.query('SELECT * FROM users WHERE userid = $1', [userid])
@@ -84,7 +84,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/edit/:userid', isLoggedIn, async (req, res) => {
+  router.post('/edit/:userid', isAdmin, async (req, res) => {
     try {
       const { userid } = req.params
       const { email, name, role } = req.body
@@ -103,7 +103,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/profile', isLoggedIn, async  (req, res, next) => {
+  router.get('/profile', isAdmin, async  (req, res, next) => {
     try {
 
       // const user = req.session.user
@@ -121,7 +121,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/profile', isLoggedIn, async (req, res) => {
+  router.post('/profile', isAdmin, async (req, res) => {
     try {
       const user = req.session.user
       // const {userid} = user
@@ -143,7 +143,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/changepassword', isLoggedIn, async  (req, res, next) => {
+  router.get('/changepassword', isAdmin, async  (req, res, next) => {
     try {
       res.render('users/changepw', {
         success: req.flash('success'),
@@ -156,7 +156,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/changepassword', isLoggedIn, async  (req, res, next) => {
+  router.post('/changepassword', isAdmin, async  (req, res, next) => {
     try {
       const user = req.session.user
       // const {userid} = user
@@ -177,7 +177,7 @@ module.exports = (db) => {
     }
   });
 
-  router.get('/delete/:userid', isLoggedIn, async  (req, res, next) => {
+  router.get('/delete/:userid', isAdmin, async  (req, res, next) => {
     try {
       const { userid } = req.params
       await db.query('DELETE FROM users WHERE userid = $1', [userid])

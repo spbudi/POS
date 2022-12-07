@@ -27,7 +27,11 @@ router.post('/login', async function(req, res, next) {
     delete user['password']
 
     req.session.user = user
-    res.redirect('/dashboard')
+    if (user.role == 'Admin') {
+        res.redirect('/dashboard')
+    } else{
+        res.redirect('/sales')
+    }
 
     }catch(err) {
         req.flash('error', err)

@@ -6,4 +6,12 @@ module.exports = {
       res.redirect('/');
     }
   },
+
+  isAdmin: (req, res, next) => {
+    if (req.session.user && req.session.user.role == 'Admin') {
+      next()
+  } else {
+      res.redirect('/sales')
+  }
+  }
 };

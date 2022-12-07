@@ -18,12 +18,14 @@
   <hr class="sidebar-divider my-0" />
 
   <!-- Nav Item - Dashboard -->
+  <% if(user.role == "Admin"){%>
   <li class="nav-item <%= currentPage == 'POS - Dashboard' ? 'active' : '' %>">
     <a class="nav-link" href="/dashboard">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a
     >
   </li>
+  <% }%>
 
   <!-- Divider -->
   <hr class="sidebar-divider" />
@@ -32,6 +34,7 @@
   <div class="sidebar-heading">MASTER</div>
 
   <!-- Nav Item - Utilities Collapse Menu -->
+  <% if(user.role == 'Admin'){%>
   <li class="nav-item <%= currentPage == 'POS - Good Utilities' ? 'active' : '' %>">
     <a
       class="nav-link collapsed"
@@ -57,6 +60,7 @@
       </div>
     </div>
   </li>
+  <% }%>
 
     <li class="nav-item <%= currentPage == 'POS - Suppliers' ? 'active' : '' %>">
       <a class="nav-link" href="/suppliers">
@@ -70,11 +74,13 @@
         <span>Customers</span></a>
   </li>
 
+  <% if (user.role == 'Admin') {%>
   <li class="nav-item <%= currentPage == 'POS - Users' ? 'active' : ''%>">
     <a class="nav-link" href="/users">
         <i class="fas fa-fw fa-user"></i>
         <span>Users</span></a>
 </li>
+  <% } %>
 
   <!-- Divider -->
   <hr class="sidebar-divider" />

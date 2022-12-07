@@ -2,11 +2,11 @@ var express = require('express');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var router = express.Router();
-const { isLoggedIn } = require('../helpers/util')
+const { isAdmin } = require('../helpers/util')
 
 
 module.exports = (db) => {
-  router.get('/', isLoggedIn, async function (req, res, next) {
+  router.get('/', isAdmin, async function (req, res, next) {
     try {
       const { rows } = await db.query('SELECT * FROM units');
       res.render('units/list', {
@@ -50,14 +50,14 @@ module.exports = (db) => {
     res.json(response)
 })
 
-  router.get('/add', isLoggedIn, async  (req, res, next) => {
+  router.get('/add', isAdmin, async  (req, res, next) => {
     res.render('units/add', {
       currentPage: 'POS - Add',
       user: req.session.user,
     })
   });
 
-  router.post('/add', isLoggedIn, async (req, res) => {
+  router.post('/add', isAdmin, async (req, res) => {
     try {
       const { unit, name, note } = req.body
       await db.query('INSERT INTO units (unit, name, note) VALUES ($1, $2, $3)', [unit, name, note])
@@ -69,7 +69,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/edit/:unit', isLoggedIn, async  (req, res, next) => {
+  router.get('/edit/:unit', isAdmin, async  (req, res, next) => {
     try {
       const { unit } = req.params
       const { rows } = await db.query('SELECT * FROM units WHERE unit = $1', [unit])
@@ -83,7 +83,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/edit/:unit', isLoggedIn, async (req, res) => {
+  router.post('/edit/:unit', isAdmin, async (req, res) => {
     try {
       const{ unit } = req.params
       const { name, note } = req.body
@@ -96,7 +96,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/delete/:unit', isLoggedIn, async  (req, res, next) => {
+  router.get('/delete/:unit', isAdmin, async  (req, res, next) => {
     try {
       const { unit } = req.params
       await db.query('DELETE FROM units WHERE unit = $1', [unit])
