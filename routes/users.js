@@ -2,7 +2,7 @@ var express = require('express');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var router = express.Router();
-const { isAdmin } = require('../helpers/util')
+const { isAdmin, isLoggedIn } = require('../helpers/util')
 
 
 module.exports = (db) => {
@@ -103,7 +103,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/profile', isAdmin, async  (req, res, next) => {
+  router.get('/profile', isLoggedIn, async  (req, res, next) => {
     try {
 
       // const user = req.session.user
@@ -121,7 +121,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/profile', isAdmin, async (req, res) => {
+  router.post('/profile', isLoggedIn, async (req, res) => {
     try {
       const user = req.session.user
       // const {userid} = user
@@ -143,7 +143,7 @@ module.exports = (db) => {
     }
   })
 
-  router.get('/changepassword', isAdmin, async  (req, res, next) => {
+  router.get('/changepassword', isLoggedIn, async  (req, res, next) => {
     try {
       res.render('users/changepw', {
         success: req.flash('success'),
@@ -156,7 +156,7 @@ module.exports = (db) => {
     }
   });
 
-  router.post('/changepassword', isAdmin, async  (req, res, next) => {
+  router.post('/changepassword', isLoggedIn, async  (req, res, next) => {
     try {
       const user = req.session.user
       // const {userid} = user
