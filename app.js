@@ -25,6 +25,7 @@ var purchasesRouter = require('./routes/purchases')(pool);
 var customersRouter = require('./routes/customers')(pool);
 var salesRouter = require('./routes/sales')(pool);
 var dashboardRouter = require('./routes/dashboard')(pool);
+var notificationsRouter = require('./routes/notifications')(pool);
 
 var app = express();
 
@@ -54,6 +55,7 @@ app.use('/purchases', purchasesRouter);
 app.use('/customers', customersRouter);
 app.use('/sales', salesRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/notifications', notificationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
